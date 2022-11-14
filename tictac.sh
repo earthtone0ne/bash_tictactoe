@@ -1,25 +1,28 @@
 #!/usr/bin/env bash
-# set -eu
 boardSize=3
-row1="abc"
-row2="def"
-row3="ghi"
+letters="abcdefghijklmnop"
+horizontalLine="───┼"
+margin="    "
 gameActive=1
+lineLength=$((boardSize * 4 - 1))
 ## define a board
-for ((i=1; i<=boardSize; i++)); do
-	rowVar=row$i
-  row=${!rowVar}
+echo
+
+for ((i=0; i<boardSize; i++)); do
+	row=${letters:((i * boardSize)):boardSize}
 	output=""
+	divider=""
 	for ((j=0; j<boardSize; j++)); do
-		char="${row:0:1}" 
-		output+="$char | "
-		row="${row:1}"
+		char=${row:$j:1}
+		output+=" $char │"
+		divider+=$horizontalLine
 	done
-	echo "${output:0:9}"
-	if [[ $i < $boardSize ]]; then echo "--+---+--"; fi
+	echo "$margin${output:0:lineLength}"
+	if [[ $i -lt $((boardSize - 1)) ]]; then echo "$margin${divider:0:lineLength}"; fi
 done
-echo "yeh"
-echo ":: $row1 $row2 $row3"
+
+echo
+
 ## loop
 # while gameActive; do
 
