@@ -43,19 +43,31 @@ while [ $gameActive = 1 ]; do
 	drawGrid
 	### get user choice
 	echo "Select a space: [$availableLetters]"
-	read -r selection
-	echo "Selected: $selection"
-	if [[ $availableLetters == *"$selection"* ]]; then
-		playerSquares+=$selection
-		availableLetters=${availableLetters/${selection}}
+	read -r userChoice
+	echo "Selected: $userChoice"
+	if [[ $availableLetters == *"$userChoice"* ]]; then
+		playerSquares+=$userChoice
+		availableLetters=${availableLetters/${userChoice}}
 		
-		### test choice & report
-		
+		### test choice & report result
+		######### TODO
+
 		sleep 1
-		
+		drawGrid
+
 		### make npc choice
-		
-		### test choice & report
+		availableLen=${#availableLetters}
+		npcIndex=$(( RANDOM % (availableLen - 1) ))
+		npcChoice=${availableLetters:$npcIndex:1}
+		npcSquares+=$npcChoice
+		availableLetters=${availableLetters/${npcChoice}}
+		echo "Computer chose: $npcChoice"
+		sleep 1
+		drawGrid
+
+		### test choice & report result
+		######### TODO
+
 	else
 		echo 'Not a valid selection. Try again.'
 		sleep 1
