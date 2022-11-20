@@ -1,27 +1,25 @@
 #!/usr/bin/env bash
-# colors
-C_NPC="\033[0;36m"
-C_HUMAN="\033[0;35m"
-C_RESET="\033[0m"
-
-gameActive=1
+# values for drawing a board
 boardSize=3
 horizontalLine="───┼"
 margin="    "
 lineLength=$((boardSize * 4 - 1))
 letters="abcdefghijklmnop"
-availableLetters=${letters:0:((boardSize * boardSize))}
-humanToken="${C_HUMAN}Ⓞ${C_RESET}"
-npcToken="${C_NPC}╳${C_RESET}"	
-humanSquares=""
-npcSquares=""
+# colors
+C_NPC="\033[0;36m"
+C_HUMAN="\033[0;35m"
+C_RESET="\033[0m"
+# players
 humanDesc="Human person"
 npcDesc="Computer"
+humanToken="${C_HUMAN}◉${C_RESET}"
+npcToken="${C_NPC}✖${C_RESET}"
+# game state
+gameActive=1
+availableLetters=${letters:0:((boardSize * boardSize))}
+humanSquares=""
+npcSquares=""
 winningCombos=(abc aei adg beh cfi ceg def ghi)
-
-
-## define a board
-echo
 
 function drawGrid()	{
 	clear
@@ -79,7 +77,7 @@ function checkForWin() {
 ## loop
 while [ $gameActive = 1 ]; do
 	drawGrid
-	### get user choice
+	# get user choice
 	echo "Select a space: [$availableLetters]"
 	read -r userChoice
 	echo "Selected: $userChoice"
@@ -89,28 +87,26 @@ while [ $gameActive = 1 ]; do
 		availableLetters=${availableLetters/${userChoice}}
 		# reflect the change in the grid
 		drawGrid
+		echo "Selected: $userChoice"
 		
 		# test choice & report result
 		checkForWin "$humanSquares" "$humanDesc"
 		# if user won, end game
-		if [ $gameActive == 0 ]; then
-			break
-		fi
+		if [[ $gameActive == 1 && ${#availableLetters} -ge 1 ]]; then
+			sleep 1
+			# make npc choice by picking a random available letter
+			availableLen=${#availableLetters}
+			npcIndex=$(( RANDOM % (availableLen - 1) ))
+			npcChoice=${availableLetters:$npcIndex:1}
+			npcSquares+=$npcChoice
+			availableLetters=${availableLetters/${npcChoice}}
+			drawGrid
+			echo "Computer chose: $npcChoice"
 
-		sleep 1
-		
-		# make npc choice by picking a random available letter
-		availableLen=${#availableLetters}
-		npcIndex=$(( RANDOM % (availableLen - 1) ))
-		npcChoice=${availableLetters:$npcIndex:1}
-		npcSquares+=$npcChoice
-		availableLetters=${availableLetters/${npcChoice}}
-		echo "Computer chose: $npcChoice"
-		drawGrid
-		
-		# test choice & report result
-		checkForWin "$npcSquares" "$npcDesc"
-		sleep 1
+			# test choice & report result
+			checkForWin "$npcSquares" "$npcDesc"
+			sleep 1
+		fi
 
 	else
 		echo 'Not a valid selection. Try again.'
