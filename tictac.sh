@@ -2,7 +2,7 @@
 # values for drawing a board
 boardSize=3
 horizontalLine="───┼"
-margin="    "
+margin="           "
 lineLength=$((boardSize * 4 - 1))
 letters="abcdefghijklmnop"
 # colors
@@ -23,7 +23,7 @@ winningCombos=(abc aei adg beh cfi ceg def ghi)
 
 function drawGrid()	{
 	clear
-	echo
+	echo -e "\n\n"
 	for ((i=0; i<boardSize; i++)); do
 		row=${letters:((i * boardSize)):boardSize}
 		output=""
